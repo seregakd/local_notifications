@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notification'),
+        title: const Text('Notifications'),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -205,26 +205,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
     int difference = scheduledDate.difference(DateTime.now()).inSeconds;
 
-    if (difference > 30) {
-      if (!_onNotification) {
+    if (!_onNotification) {
+      if (difference > 10) {
         _setNotification(
-            context: context,
-            title: 'title',
-            body: 'body',
-            dateTime: scheduledDate,
+          context: context,
+          title: 'title',
+          body: 'body',
+          dateTime: scheduledDate,
         );
+        setState(() {
+          _onNotification = !_onNotification;
+        });
       } else {
-        _cancelNotification();
+        const snackBar = SnackBar(
+          content: Text('Date must be in the future!'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
+    } else {
+      _cancelNotification();
       setState(() {
         _onNotification = !_onNotification;
       });
-    } else {
-      const snackBar = SnackBar(
-        content: Text('Date must be in the future!'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+
+
   }
 
 /// Payload
